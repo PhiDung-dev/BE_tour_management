@@ -3,6 +3,8 @@ package com.example.BE_tour_management.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,5 +15,6 @@ public class AccountResponse {
     String id;
     String username;
     String password;
-    String role;
+    Set<String> roles;
+
 }

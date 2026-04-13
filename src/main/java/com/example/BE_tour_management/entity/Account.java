@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -18,7 +20,7 @@ public class Account {
     String id;
     String username;
     String password;
-    Role role = Role.USER;
+    Set<String> roles;
 
     @OneToOne(mappedBy = "account")
     User user;
