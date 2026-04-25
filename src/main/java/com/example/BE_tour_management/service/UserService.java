@@ -13,6 +13,8 @@ import com.example.BE_tour_management.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class UserService {
     AccountRepository accountRepository;
     UserMapper userMapper;
 
+    @PostAuthorize("@securityService.isOwnerUser()")
     public UserResponse createUser(UserCreateRequest request) {
         Account account = accountRepository.findById(request.getAccountId()).orElseThrow(()->new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
         User user = userMapper.toUser(request);
@@ -36,20 +39,24 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> readUsers() {
         return userMapper.toUserResponseList(userRepository.findAll());
     }
 
+    @PreAuthorize("hasRole('ADMIN') or @securityService.isOwnerUser(#id, authentication.name)")
     public UserResponse readUser(String id) {
         return userMapper.toUserResponse(userRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.USER_NOT_FOUND)));
     }
 
+    @PreAuthorize("@securityService.isOwnerUser(#id, authentication.name)")
     public UserResponse updateUser(String id, UserUpdateRequest request) {
         User user = userRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.USER_NOT_FOUND));
         userMapper.updateUser(user, request);
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
+    @PreAuthorize("@securityService.isOwnerUser(#id, authentication.name)")
     public void deleteUser(String id) {
         if(!userRepository.existsById(id)) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);

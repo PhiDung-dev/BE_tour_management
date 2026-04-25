@@ -12,6 +12,7 @@ import com.example.BE_tour_management.repository.TourRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class TourService {
     TourRepository tourRepository;
     TourMapper tourMapper;
 
+    @PreAuthorize("hasRole('ADMIN')")
     public TourResponse createTour(TourCreateRequest request) {
         String title = request.getTitle().trim();
         if(tourRepository.existsByTitle(title)) {
@@ -41,6 +43,7 @@ public class TourService {
         return tourMapper.toTourResponse(tourRepository.save(tour));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public List<TourResponse> readTours() {
         return tourMapper.toTourResponseList(tourRepository.findAll());
     }
@@ -50,6 +53,7 @@ public class TourService {
         return tourMapper.toTourResponse(tour);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public TourResponse updateTour(String id, TourUpdateRequest request) {
         Tour tour = tourRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.TOUR_NOT_FOUND));
         tourMapper.updateTour(tour, request);
@@ -63,6 +67,7 @@ public class TourService {
         return tourMapper.toTourResponse(tourRepository.save(tour));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteTour(String id) {
         if(!tourRepository.existsById(id)) {
             throw new AppException(ErrorCode.TOUR_NOT_FOUND);

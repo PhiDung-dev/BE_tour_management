@@ -12,6 +12,8 @@ import com.example.BE_tour_management.repository.AccountRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,14 +42,17 @@ public class AccountService {
         return accountMapper.toAccountResponse(accountRepository.save(account));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public List<AccountResponse> readAccounts() {
         return accountMapper.toAccountResponseList(accountRepository.findAll());
     }
 
+    @PreAuthorize("hasRole('ADMIN') or @securityService.isOwnerAccount(#id, authentication.name)")
     public AccountResponse readAccount(String id) {
         return accountMapper.toAccountResponse(accountRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.ACCOUNT_NOT_FOUND)));
     }
 
+    @PreAuthorize("@securityService.isOwnerAccount(#id, authentication.name)")
     public AccountResponse updateAccount(String id, AccountUpdateRequest request) {
         Account account = accountRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
         accountMapper.updateAccount(account, request);
@@ -55,6 +60,7 @@ public class AccountService {
         return accountMapper.toAccountResponse(accountRepository.save(account));
     }
 
+    @PreAuthorize("@securityService.isOwnerAccount(#id, authentication.name)")
     public void deleteAccount(String id) {
         if(!accountRepository.existsById(id)) {
             throw new AppException(ErrorCode.ACCOUNT_NOT_FOUND);

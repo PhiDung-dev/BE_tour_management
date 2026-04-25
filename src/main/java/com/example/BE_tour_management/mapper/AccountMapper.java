@@ -15,12 +15,8 @@ import java.util.List;
 public interface AccountMapper {
 
     Account toAccount(AccountCreateRequest request);
-    @Mapping(target = "role", ignore = true)
     AccountResponse toAccountResponse(Account account);
     List<AccountResponse> toAccountResponseList(List<Account> accounts);
     void updateAccount(@MappingTarget Account account, AccountUpdateRequest request);
 
-    default String map(Role role) {
-        return role.getRole();
-    }
 }
