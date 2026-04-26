@@ -26,4 +26,13 @@ public class Tour {
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true)
     List<TourImage> images;
 
+    @OneToMany(mappedBy = "tour")
+    List<Schedule> schedules;
+
+    @OneToMany(mappedBy = "tour")
+    List<Rating> ratings;
+
+    @OneToMany(mappedBy = "tour")
+    List<FavoriteTour> favoriteTours;
+
 }

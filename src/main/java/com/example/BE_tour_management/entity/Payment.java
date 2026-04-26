@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
@@ -13,24 +11,16 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User {
+public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
-    String fullName;
-    String email;
-    String phoneNumber;
-    String address;
+    double amount;
+    String status;
 
     @OneToOne
-    @JoinColumn(name = "account_id", unique = true)
-    Account account;
-
-    @OneToMany(mappedBy = "user")
-    List<Booking> bookings;
-
-    @OneToMany(mappedBy = "user")
-    List<Rating> ratings;
+    @JoinColumn(name = "booking_id")
+    Booking booking;
 
 }

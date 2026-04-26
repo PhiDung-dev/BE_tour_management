@@ -25,10 +25,26 @@ public class ApplicationConfig {
         return args -> {
             if(!accountRepository.existsByUsername("admin")) {
                 Set<String> roles = Set.of(Role.ADMIN.getRole());
+                Set<String> staffRole = Set.of(Role.STAFF.getRole());
                 Account account = Account.builder()
                         .username("admin")
                         .password(passwordEncoder.encode("admin"))
                         .roles(roles)
+                        .build();
+                Account account1 = Account.builder()
+                        .username("staff1")
+                        .password(passwordEncoder.encode("staff1"))
+                        .roles(staffRole)
+                        .build();
+                Account account2 = Account.builder()
+                        .username("staff2")
+                        .password(passwordEncoder.encode("staff2"))
+                        .roles(staffRole)
+                        .build();
+                Account account3 = Account.builder()
+                        .username("staff3")
+                        .password(passwordEncoder.encode("staff3"))
+                        .roles(staffRole)
                         .build();
                 accountRepository.save(account);
             }

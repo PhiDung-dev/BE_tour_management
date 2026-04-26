@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -13,24 +14,20 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User {
+public class Schedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
-    String fullName;
-    String email;
-    String phoneNumber;
-    String address;
+    LocalDate startDate;
+    LocalDate endDate;
+    int slot;
 
-    @OneToOne
-    @JoinColumn(name = "account_id", unique = true)
-    Account account;
+    @ManyToOne
+    @JoinColumn(name = "tour_id")
+    Tour tour;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "schedule")
     List<Booking> bookings;
-
-    @OneToMany(mappedBy = "user")
-    List<Rating> ratings;
 
 }
